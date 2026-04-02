@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    build: .
+    container_name: endless-bot
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    environment:
+      # Tell Spring to connect to the mongodb docker container instead of host localhost
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/endlessdb
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    container_name: endless-mongodb
+    ports:
+      # Expose port to local machine for GUI viewers like Compass
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
