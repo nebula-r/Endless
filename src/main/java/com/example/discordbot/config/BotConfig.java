@@ -2,6 +2,7 @@ package com.example.discordbot.config;
 
 import com.example.discordbot.listeners.SlashCommandListener;
 import com.example.discordbot.listeners.ReactionRoleListener;
+import com.example.discordbot.listeners.WelcomeLeaveListener;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
@@ -28,13 +29,14 @@ public class BotConfig {
     private int timerCount = 0;
 
     @Bean
-    public JDA jda(SlashCommandListener slashCommandListener, ReactionRoleListener reactionRoleListener) throws InterruptedException {
+    public JDA jda(SlashCommandListener slashCommandListener, ReactionRoleListener reactionRoleListener, WelcomeLeaveListener welcomeLeaveListener) throws InterruptedException {
         JDA jda = JDABuilder.createDefault(token, EnumSet.of(
                 GatewayIntent.GUILD_MESSAGES,
                 GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_VOICE_STATES))
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.GUILD_MEMBERS))
                 .setActivity(Activity.watching("Watching over the server"))
-                .addEventListeners(slashCommandListener, reactionRoleListener)
+                .addEventListeners(slashCommandListener, reactionRoleListener, welcomeLeaveListener)
                 .build();
 
         jda.awaitReady();

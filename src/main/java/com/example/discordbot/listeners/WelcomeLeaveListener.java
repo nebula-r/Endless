@@ -22,23 +22,33 @@ public class WelcomeLeaveListener extends ListenerAdapter {
     @Value("${BOT_FOOTER_ICON_URL:}")
     private String botFooterIconUrl;
 
+    @Value("${JOIN_LEAVE_EMBED_IMAGE_JOIN:}")
+    private String JOIN_LEAVE_EMBED_IMAGE_JOIN;
+
     /**
      * Handles the event when a member joins the guild (Welcome Message).
      */
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (joinLeaveChannelId == null || joinLeaveChannelId.isEmpty()) return;
-
         TextChannel channel = event.getJDA().getTextChannelById(joinLeaveChannelId);
 
         if (channel != null) {
-            String username = event.getUser().getName();
+            String serverName = event.getGuild().getName();
+            String serverIconUrl = event.getGuild().getIconUrl();
+
+            String userMention = event.getUser().getAsMention();
+            String userAvatarUrl = event.getUser().getEffectiveAvatarUrl();
+
+            int otherMembers = event.getGuild().getMemberCount() - 1;
 
             EmbedBuilder embed = new EmbedBuilder()
-                    .setTitle("🎉 Welcome to our server, " + username + "!")
-                    .setDescription("We are glad to have you here.")
-                    .setFooter("Welcome Message", botFooterIconUrl.isEmpty() ? null : botFooterIconUrl)
-                    .setColor(Color.BLUE) // Using java.awt.Color
+                    .setAuthor(serverName, null, serverIconUrl)
+                    .setDescription(userMention + " is now Among Us other " + otherMembers + " people")
+                    .setThumbnail(userAvatarUrl)
+                    .setColor(Color.GREEN)
+                    .setImage(JOIN_LEAVE_EMBED_IMAGE_JOIN)
+                    .setFooter("Melody by ssh.adow", botFooterIconUrl.isEmpty() ? null : botFooterIconUrl)
                     .setTimestamp(Instant.now());
 
             channel.sendMessageEmbeds(embed.build()).queue();
