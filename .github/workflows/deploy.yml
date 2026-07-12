@@ -1,0 +1,10 @@
+name: Deploy to VPS
+on: [push]
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull Code
+        run: git pull
+      - name: Restart Service
+        run: docker compose -f /home/nebula/docker/Endless/docker-compose.yml up -d --build
